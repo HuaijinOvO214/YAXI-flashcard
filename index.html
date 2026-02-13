@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>桠溪话刷词 | 毗陵吴语</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fcfaf5;
+            color: #1a1a1a;
+            font-family: "SimSun", "STSong", "Songti SC", "Noto Serif CJK SC", "Ma Shan Zheng", serif;
+            line-height: 1.85;
+            padding: 20px;
+            letter-spacing: 0.3px;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px 30px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 0 24px rgba(0,0,0,0.03);
+            min-height: 90vh;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 5px;
+            font-family: "ZCOOL XiaoWei", "SimSun", "Songti SC", serif;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            letter-spacing: 1.5px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-family: "SimSun", serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .tab.active {
+            background: #f5f2eb;
+            border-color: #999;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .word {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            font-family: "ZCOOL XiaoWei", "SimSun", serif;
+        }
+
+        .pron {
+            font-size: 24px;
+            color: #777;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .def {
+            font-size: 18px;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        .category {
+            font-size: 14px;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        .audio-btn {
+            margin-top: 16px;
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-family: "SimSun", serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .audio-btn:hover {
+            background: #f5f2eb;
+            border-color: #999;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-family: "SimSun", serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #f5f2eb;
+            border-color: #999;
+        }
+
+        .progress {
+            text-align: center;
+            margin-top: 16px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 听音辨词模式 */
+        .quiz-mode {
+            display: none;
+        }
+
+        .quiz-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            min-height: 280px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .quiz-play-btn {
+            margin-bottom: 20px;
+            padding: 12px 24px;
+            font-size: 18px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .quiz-option {
+            padding: 16px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-family: "SimSun", serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .quiz-option:hover {
+            background: #f5f2eb;
+            border-color: #999;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .feedback-icon {
+            font-size: 48px;
+            margin: 16px 0;
+        }
+
+        .feedback-icon.correct {
+            color: #28a745;
+        }
+
+        .feedback-icon.incorrect {
+            color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        .mode-switch {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .mode-switch button {
+            margin: 0 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: #888;
+            font-size: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="title">桠溪话刷词</div>
+        <div class="subtitle">毗陵片吴语 · 日常词汇积累</div>
+    </header>
+
+    <div class="mode-switch">
+        <button id="mode-flashcard">刷词模式</button>
+        <button id="mode-quiz">听音辨词</button>
+    </div>
+
+    <div class="tabs" id="tabs">
+        <div class="tab active" data-category="全部">全部</div>
+        <div class="tab" data-category="食物类">食物类</div>
+        <div class="tab" data-category="日用品类">日用品类</div>
+        <div class="tab" data-category="描人状物类">描人状物类</div>
+    </div>
+
+    <!-- 刷词模式 -->
+    <div class="flashcard-mode" id="flashcard-mode">
+        <div class="card" id="card">
+            <div class="word" id="word">苹果</div>
+            <div class="pron" id="pron">pin⁵¹ koʔ²¹</div>
+            <div class="def" id="def">苹果</div>
+            <div class="category" id="category">食物类</div>
+            <button class="audio-btn" id="play-audio">🔊 播放发音</button>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="prev">上一词</button>
+            <button id="next">下一词</button>
+        </div>
+
+        <div class="progress" id="progress">1 / 19</div>
+    </div>
+
+    <!-- 听音辨词模式 -->
+    <div class="quiz-mode" id="quiz-mode">
+        <div class="quiz-card" id="quiz-card">
+            <div class="feedback-icon" id="feedback-icon"></div>
+            <button class="quiz-play-btn" id="quiz-play">🔊 播放发音</button>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="progress" id="quiz-progress">第 1 题</div>
+        </div>
+        <div class="nav-buttons">
+            <button id="quiz-next">下一题</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    桠溪话字词典 © 2026 | 毗陵吴语保护项目
+</footer>
+
+<script>
+    // 词汇数据（示例音频链接，实际使用时替换为真实音频URL）
+    const words = [
+        {
+            word: "苹果",
+            pron: "pin⁵¹ koʔ²¹",
+            def: "苹果",
+            category: "食物类",
+            audio: "audio/食物类/pingguo.m4a"
+        },
+        {
+            word: "石榴",
+            pron: "zəʔ²¹ liəu⁵¹",
+            def: "石榴",
+            category: "食物类",
+            audio: "audio/食物类/shiliu.m4a"
+        },
+        {
+            word: "茶叶",
+            pron: "dzoʔ²¹ ɦia²¹³",
+            def: "茶叶",
+            category: "食物类",
+            audio: "audio/食物类/chaye.m4a"
+        },
+        {
+            word: "花生",
+            pron: "faʔ²¹ səŋ⁴⁴",
+            def: "花生",
+            category: "食物类",
+            audio: "audio/食物类/huasheng.m4a"
+        },
+        {
+            word: "花生米",
+            pron: "faʔ²¹ səŋ⁴⁴ mɿ²¹³",
+            def: "花生米",
+            category: "食物类",
+            audio: "audio/食物类/huashengmi.m4a"
+        },
+        {
+            word: "矮脚黄",
+            pron: "ŋa⁵¹ tɕiaʔ²¹ ɦuaŋ²¹³",
+            def: "一种小白菜",
+            category: "食物类",
+            audio: "audio/食物类/aijiaohuang.m4a"
+        },
+        {
+            word: "藕",
+            pron: "ŋəu²¹³",
+            def: "藕",
+            category: "食物类",
+            audio: "audio/食物类/ou.m4a"
+        },
+        {
+            word: "酸",
+            pron: "sø⁴⁴",
+            def: "酸",
+            category: "食物类",
+            audio: "audio/食物类/suan.m4a"
+        },
+        {
+            word: "咬不动",
+            pron: "ŋɔ²¹³ bəʔ²¹ doŋ²¹³",
+            def: "咬不动",
+            category: "食物类",
+            audio: "audio/食物类/yaobudong.m4a"
+        },
+        {
+            word: "夹菜",
+            pron: "tɕiaʔ²¹ tsʰɛ⁴⁴",
+            def: "夹菜",
+            category: "食物类",
+            audio: "audio/食物类/jiacai.m4a"
+        },
+        {
+            word: "切",
+            pron: "tɕʰiəʔ²¹",
+            def: "切",
+            category: "食物类",
+            audio: "audio/食物类/qie.m4a"
+        },
+        {
+            word: "中毒",
+            pron: "tsoŋ⁴⁴ doʔ²¹",
+            def: "中毒",
+            category: "食物类",
+            audio: "audio/食物类/zhongdu.m4a"
+        },
+        {
+            word: "盒子",
+            pron: "ɦaʔ²¹ tsɿ²¹³",
+            def: "盒子",
+            category: "日用品类",
+            audio: "audio/日用品类/hezi.m4a"
+        },
+        {
+            word: "背褡",
+            pron: "pəʔ²¹ taʔ²¹",
+            def: "背心",
+            category: "日用品类",
+            audio: "audio/日用品类/beida.m4a"
+        },
+        {
+            word: "脱个宝儿",
+            pron: "tʰəʔ²¹ kəʔ²¹ pɔ⁴⁴ əl²¹³",
+            def: "形容人赤着上身，露出肚皮",
+            category: "描人状物类",
+            audio: "audio/描人状物类/tuogebaoer.m4a"
+        },
+        {
+            word: "滚壮",
+            pron: "kuən⁵¹ dzaŋ²¹³",
+            def: "壮实",
+            category: "描人状物类",
+            audio: "audio/描人状物类/gunzhuang.m4a"
+        },
+        {
+            word: "有种",
+            pron: "ɦiəu²¹³ tsoŋ⁴⁴",
+            def: "有很多",
+            category: "描人状物类",
+            audio: "audio/描人状物类/youzhong.m4a"
+        },
+        {
+            word: "撇多少",
+            pron: "pʰiəʔ²¹ təʔ²¹ so⁵¹",
+            def: "不知道多少",
+            category: "描人状物类",
+            audio: "audio/描人状物类/pieduoshao.m4a"
+        },
+        {
+            word: "介许多",
+            pron: "ka⁴⁴ ɕi⁴⁴ tu⁴⁴",
+            def: "这么多",
+            category: "描人状物类",
+            audio: "audio/描人状物类/jiexuduo.m4a"
+        }
+    ];
+
+    let currentIndex = 0;
+    let currentCategory = "全部";
+    let filteredWords = [...words];
+    let currentMode = "flashcard";
+    let quizCurrentIndex = 0;
+    let quizOptions = [];
+    let correctWord = null;
+
+    // 更新刷词卡片
+    function updateCard() {
+        const w = filteredWords[currentIndex];
+        document.getElementById("word").textContent = w.word;
+        document.getElementById("pron").textContent = w.pron;
+        document.getElementById("def").textContent = w.def;
+        document.getElementById("category").textContent = w.category;
+        document.getElementById("progress").textContent = `${currentIndex + 1} / ${filteredWords.length}`;
+        document.getElementById("play-audio").dataset.audio = w.audio;
+    }
+
+    // 切换分类
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            currentCategory = tab.dataset.category;
+            if (currentCategory === "全部") {
+                filteredWords = [...words];
+            } else {
+                filteredWords = words.filter(w => w.category === currentCategory);
+            }
+            currentIndex = 0;
+            updateCard();
+        });
+    });
+
+    // 上一词 / 下一词
+    document.getElementById("next").addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % filteredWords.length;
+        updateCard();
+    });
+
+    document.getElementById("prev").addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + filteredWords.length) % filteredWords.length;
+        updateCard();
+    });
+
+    // 播放音频
+    document.getElementById("play-audio").addEventListener("click", (e) => {
+        const audioUrl = e.target.dataset.audio;
+        if (audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.play();
+        } else {
+            alert("暂无音频");
+        }
+    });
+
+    // 切换模式
+    document.getElementById("mode-flashcard").addEventListener("click", () => {
+        currentMode = "flashcard";
+        document.getElementById("flashcard-mode").style.display = "block";
+        document.getElementById("quiz-mode").style.display = "none";
+    });
+
+    document.getElementById("mode-quiz").addEventListener("click", () => {
+        currentMode = "quiz";
+        document.getElementById("flashcard-mode").style.display = "none";
+        document.getElementById("quiz-mode").style.display = "block";
+        generateQuiz();
+    });
+
+    // 生成听音辨词题目
+    function generateQuiz() {
+        if (filteredWords.length < 4) {
+            alert("该分类下词汇不足，无法生成题目");
+            return;
+        }
+
+        // 随机选择正确答案
+        correctWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+        // 随机选择3个干扰项
+        const distractors = filteredWords
+            .filter(w => w !== correctWord)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3);
+        // 打乱选项顺序
+        quizOptions = [correctWord, ...distractors].sort(() => 0.5 - Math.random());
+
+        // 渲染选项
+        const optionsContainer = document.getElementById("quiz-options");
+        optionsContainer.innerHTML = "";
+        quizOptions.forEach(option => {
+            const div = document.createElement("div");
+            div.className = "quiz-option";
+            div.textContent = option.word;
+            div.addEventListener("click", () => checkAnswer(option));
+            optionsContainer.appendChild(div);
+        });
+
+        // 重置反馈
+        document.getElementById("feedback-icon").textContent = "";
+        document.getElementById("feedback-icon").className = "feedback-icon";
+        document.querySelectorAll(".quiz-option").forEach(opt => {
+            opt.classList.remove("correct", "incorrect");
+        });
+
+        // 更新进度
+        quizCurrentIndex++;
+        document.getElementById("quiz-progress").textContent = `第 ${quizCurrentIndex} 题`;
+    }
+
+    // 检查答案
+    function checkAnswer(selected) {
+        const feedbackIcon = document.getElementById("feedback-icon");
+        if (selected === correctWord) {
+            feedbackIcon.textContent = "✓";
+            feedbackIcon.className = "feedback-icon correct";
+            document.querySelectorAll(".quiz-option").forEach(opt => {
+                if (opt.textContent === correctWord.word) {
+                    opt.classList.add("correct");
+                }
+            });
+        } else {
+            feedbackIcon.textContent = "✗";
+            feedbackIcon.className = "feedback-icon incorrect";
+            document.querySelectorAll(".quiz-option").forEach(opt => {
+                if (opt.textContent === selected.word) {
+                    opt.classList.add("incorrect");
+                }
+                if (opt.textContent === correctWord.word) {
+                    opt.classList.add("correct");
+                }
+            });
+        }
+    }
+
+    // 下一题
+    document.getElementById("quiz-next").addEventListener("click", generateQuiz);
+
+    // 播放测验音频
+    document.getElementById("quiz-play").addEventListener("click", () => {
+        if (correctWord && correctWord.audio) {
+            const audio = new Audio(correctWord.audio);
+            audio.play();
+        } else {
+            alert("暂无音频");
+        }
+    });
+
+    // 初始化
+    updateCard();
+</script>
+</body>
+</html>
